@@ -124,6 +124,11 @@ for program_id in program_ids:
     data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes/' + program_id)
     data_type_ids = [d['DataTypeId'] for d in data_types]
 
+    path = '/'.join((program_id, 'GeographicalAttributes'))
+    # e.g. https://data.chesapeakebay.net/api.json/LivingResources/NontidalBenthic/GeographicalAttributes
+    geographical_types = util.download_and_jsonify(NAMESPACE, path)
+    geographical_type_ids = [d['GeoTypeId'] for d in geographical_types]
+
     for data_type_id in data_type_ids:
         print('Starting program {}, data type {}...'.format(program_id, data_type_id))
         # e.g. https://data.chesapeakebay.net/api.json/LivingResources/Projects/TidalBenthic
@@ -132,7 +137,7 @@ for program_id in program_ids:
         for project_id in project_ids:
             params = (program_id, data_type_id, project_id)
             print('Starting program {}, data type {}, project {}...'.format(*params))
-            for geographical_type_id in geographical_types[data_type_id]:
+            for geographical_type_id in geographical_type_ids:
                 params = (program_id, data_type_id, project_id, geographical_type_id)
                 print('Starting program {}, data type {}, project {}, geo type {}...'.format(*params))
                 # geographical_type_id is something like HUC8, FIPS, etc.
