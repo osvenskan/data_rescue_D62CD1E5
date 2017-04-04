@@ -46,14 +46,18 @@ PRESENT_END_DATE_ISO = datetime.datetime.strptime(PRESENT_END_DATE_M_D_YYYY, '%m
 
 
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
-# used to represent them in the JSON. This same map is hardcoded in the function
-# _getGeographicalIDList() in WaterQuality.js (line 459) so I feel pretty safe hardcoding it here.
+# used to represent them in the JSON. This same map is hardcoded in the various JavaScript files
+# so I feel pretty safe hardcoding it here.
+# ref: _getGeographicalIDList() in WaterQuality.js (line 459)
+# ref: _fillGeoMultiSelect() in LivingResources.js (line 229)
 GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP = {'HUC8': 'HUCEightId',
                                       'HUC12': 'HUCTwelveId',
                                       'FIPS': 'FIPSStateCountyCodeId',
                                       'CBSeg2003': 'CBSegment2003Id',
                                       'SegmentShed2009': 'CBSegmentShed2009Id',
                                       'Station': 'MonitoringLocationId',
+                                      'Agency': 'DataProviderId',
+                                      'EcoRegion': 'EPALevelFourEcoregionId',
                                       }
 
 # _http_connection is a global for use by this module only. Making it global allows us to keep
