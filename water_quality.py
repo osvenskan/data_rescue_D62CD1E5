@@ -107,7 +107,7 @@ for geographical_type_id in geographical_type_ids:
 # Remove Station from the list of data types since it was just handled above.
 data_types = [data_type for data_type in data_types if data_type != 'Station']
 # All of the other data types (MonitorEvent, WaterQuality, LightAttenuation, and OpticalDensity)
-# behave mostly the same (although WayerQuality is a little more complex) and are handled by the
+# behave mostly the same (although WaterQuality is a little more complex) and are handled by the
 # code below.
 programs = util.download_and_jsonify(NAMESPACE, 'Programs')
 projects_by_program = util.download_and_jsonify(NAMESPACE, 'ProjectsList')
