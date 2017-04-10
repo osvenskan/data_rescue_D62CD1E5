@@ -55,21 +55,22 @@ for geographical_type_id in geographical_type_ids:
     #         }
     #     ]
     #
-    path = 'CBI/{}/{}/{}'.format(util.HISTORICAL_START_DATE_M_D_YYYY,
-                                 util.HISTORICAL_END_DATE_M_D_YYYY,
-                                 geographical_type_id)
-
-    attributes = util.download_and_jsonify(NAMESPACE, path)
+    attributes = util.download_and_jsonify(NAMESPACE,
+                                           'CBI',
+                                           util.HISTORICAL_START_DATE_M_D_YYYY,
+                                           util.HISTORICAL_END_DATE_M_D_YYYY,
+                                           geographical_type_id)
 
     attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
 
     for attribute_id in attribute_ids:
-        path = 'CBI/{}/{}/{}/{}'.format(util.HISTORICAL_START_DATE_M_D_YYYY,
-                                        util.HISTORICAL_END_DATE_M_D_YYYY,
-                                        geographical_type_id,
-                                        attribute_id)
         # e.g. https://data.chesapeakebay.net/api.JSON/WaterQuality/CBI/7-2-1949/8-13-1982/HUC12/20
-        util.download(NAMESPACE, path)
+        util.download(NAMESPACE,
+                      'CBI',
+                      util.HISTORICAL_START_DATE_M_D_YYYY,
+                      util.HISTORICAL_END_DATE_M_D_YYYY,
+                      geographical_type_id,
+                      attribute_id)
 
 # OK, done with historical data.
 # Modern water quality data has 5 data types: Station Information, Monitoring Event Data,
@@ -94,15 +95,13 @@ geographical_type_ids = [d['GeoTypeId'] for d in geographical_types]
 
 # Handle WaterQuality/Station which is a bit different from its sibling data types.
 for geographical_type_id in geographical_type_ids:
-    path = 'Station/{}'.format(geographical_type_id)
-    attributes = util.download_and_jsonify(NAMESPACE, path)
+    attributes = util.download_and_jsonify(NAMESPACE, 'Station', geographical_type_id)
 
     attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
 
     for attribute_id in attribute_ids:
-        path = 'Station/{}/{}'.format(geographical_type_id, attribute_id)
         # e.g. https://data.chesapeakebay.net/api.JSON/WaterQuality/Station/HUC8/2
-        util.download(NAMESPACE, path)
+        util.download(NAMESPACE, 'Station', geographical_type_id, attribute_id)
 
 # Remove Station from the list of data types since it was just handled above.
 data_types = [data_type for data_type in data_types if data_type != 'Station']
@@ -121,16 +120,14 @@ for data_type in data_types:
         for project_id in project_ids:
             for geographical_type_id in geographical_type_ids:
                 # geographical_type_id is something like HUC8, FIPS, etc.
-
-                path = '{}/{}/{}/{}/{}/{}'.format(data_type,
-                                                  util.PRESENT_START_DATE_M_D_YYYY,
-                                                  util.PRESENT_END_DATE_M_D_YYYY,
-                                                  program_id,
-                                                  project_id,
-                                                  geographical_type_id)
                 # https://data.chesapeakebay.net/api.json/WaterQuality/OpticalDensity/3-29-2012/3-29-2017/2/12/HUC8/
-                attributes = util.download_and_jsonify(NAMESPACE, path)
-
+                attributes = util.download_and_jsonify(NAMESPACE,
+                                                       data_type,
+                                                       util.PRESENT_START_DATE_M_D_YYYY,
+                                                       util.PRESENT_END_DATE_M_D_YYYY,
+                                                       program_id,
+                                                       project_id,
+                                                       geographical_type_id)
                 attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
 
                 if data_type == 'WaterQuality':
@@ -174,22 +171,21 @@ for data_type in data_types:
                     parameters = {}
 
                 for attribute_id in attribute_ids:
-                    path = (data_type,
+                    path = [NAMESPACE,
+                            data_type,
                             util.PRESENT_START_DATE_M_D_YYYY,
                             util.PRESENT_END_DATE_M_D_YYYY,
                             program_id,
                             project_id,
                             geographical_type_id,
-                            attribute_id)
-                    path = '/'.join([str(element) for element in path])
-
+                            attribute_id]
                     if data_type == 'WaterQuality':
                         # WaterQuality uses an extra param as described above.
                         parameter_ids = parameters[attribute_id]
 
                         for parameter_id in parameter_ids:
                             # e.g. https://data.chesapeakebay.net/api.JSON/WaterQuality/OpticalDensity/3-29-2012/3-29-2017/2/12/HUC8/20/119
-                            util.download(NAMESPACE, path + '/' + str(parameter_id))
+                            util.download(*(path + [str(parameter_id)]))
                     else:
                         # e.g. https://data.chesapeakebay.net/api.JSON/WaterQuality/OpticalDensity/3-29-2012/3-29-2017/2/12/HUC8/20
-                        util.download(NAMESPACE, path)
+                        util.download(*path)
