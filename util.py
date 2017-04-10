@@ -44,6 +44,13 @@ PRESENT_END_DATE_M_D_YYYY = '3-31-2017'
 PRESENT_START_DATE_ISO = datetime.datetime.strptime(PRESENT_START_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
 PRESENT_END_DATE_ISO = datetime.datetime.strptime(PRESENT_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
 
+# Fluorescence is different from the other categories and has a later start date. This is hardcoded
+# in Fluorescence.js (line 24).
+FLUORESCENCE_START_DATE_M_D_YYYY = '8-2-1984'
+FLUORESCENCE_END_DATE_M_D_YYYY = PRESENT_END_DATE_M_D_YYYY
+FLUORESCENCE_START_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_START_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
+FLUORESCENCE_END_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
+
 
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
 # used to represent them in the JSON. This same map is hardcoded in the various JavaScript files
@@ -126,13 +133,15 @@ def url_to_filename(url):
 
     date_range = HISTORICAL_START_DATE_M_D_YYYY + '/' + HISTORICAL_END_DATE_M_D_YYYY
     if date_range in url:
-        start_date = datetime.datetime.strptime(HISTORICAL_START_DATE_M_D_YYYY, '%m-%d-%Y').date()
-        end_date = datetime.datetime.strptime(HISTORICAL_END_DATE_M_D_YYYY, '%m-%d-%Y').date()
-        url = url.replace(date_range, start_date.isoformat() + '_to_' + end_date.isoformat())
+        url = url.replace(date_range, HISTORICAL_START_DATE_ISO + '_to_' + HISTORICAL_END_DATE_ISO)
 
     date_range = PRESENT_START_DATE_M_D_YYYY + '/' + PRESENT_END_DATE_M_D_YYYY
     if date_range in url:
         url = url.replace(date_range, PRESENT_START_DATE_ISO + '_to_' + PRESENT_END_DATE_ISO)
+
+    date_range = FLUORESCENCE_START_DATE_M_D_YYYY + '/' + FLUORESCENCE_END_DATE_M_D_YYYY
+    if date_range in url:
+        url = url.replace(date_range, FLUORESCENCE_START_DATE_ISO + '_to_' + FLUORESCENCE_END_DATE_ISO)
 
     url += '.json'
 
