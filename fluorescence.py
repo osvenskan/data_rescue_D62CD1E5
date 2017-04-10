@@ -57,7 +57,11 @@ for data_type_id in data_type_ids:
         #         "HUC8Description": "CHESTER-SASSAFRAS"
         #     }]
         # We want to extract the ids ('02050306', '02060001', '02060002').
-        attribute_ids = [d[geographical_type_id].strip() for d in attributes]
+
+        # Naturally there's one geographical_type_id that requires special handling
+        # (rolls eyes and sighs heavily in dramatic fashion)
+        id_name = 'CBSegment2003' if geographical_type_id == 'CBSeg2003' else geographical_type_id
+        attribute_ids = [d[id_name].strip() for d in attributes]
 
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/Fluorescence/Vertical/8-2-1984/4-10-2017/HUC8/02060002
