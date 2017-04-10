@@ -47,10 +47,10 @@ if program_ids != expected_program_ids:
 # for /TidalPlankton/Station which requires special handling. I handle it here.
 
 # https://data.chesapeakebay.net/api.json/LivingResources/TidalPlankton/GeographicalAttributes
-geographical_types = util.download_and_jsonify(NAMESPACE, 'TidalPlankton/GeographicalAttributes')
+geographical_types = util.download_and_jsonify(NAMESPACE, 'TidalPlankton', 'GeographicalAttributes')
 # The last two elements of the DataTypes URL seem backwards to me but that's what they are.
 # https://data.chesapeakebay.net/api.json/LivingResources/DataTypes/TidalPlankton
-data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes/TidalPlankton')
+data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes', 'TidalPlankton')
 data_type_ids = [d['DataTypeId'] for d in data_types]
 
 # For TidalPlankton, geographical_types is a dicts of lists keyed by data type. Simplify.
@@ -69,49 +69,48 @@ geographical_types = temp_geographical_types
 # First handle program == TidalPlankton, geo type == Station
 for geographical_type_id in geographical_types['Station']:
     if geographical_type_id != 'FIPS':
-        path = '/'.join(('TidalPlankton', 'Station', geographical_type_id))
         # e.g. https://data.chesapeakebay.net/api.json/LivingResources/TidalPlankton/Station/HUC8/
-        attributes = util.download_and_jsonify(NAMESPACE, path)
+        attributes = util.download_and_jsonify(NAMESPACE, 'TidalPlankton', 'Station',
+                                               geographical_type_id)
         attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
         attribute_ids = map(str, attribute_ids)
 
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/Station/HUC8/20
-            util.download(NAMESPACE, path + '/' + attribute_id)
+            util.download(NAMESPACE, 'TidalPlankton', 'Station', geographical_type_id, attribute_id)
 
 # Remove Station since it was handled above
 data_type_ids = [data_type_id for data_type_id in data_type_ids if data_type_id != 'Station']
 
 # https://data.chesapeakebay.net/api.json/LivingResources/Projects/TidalPlankton
-projects = util.download_and_jsonify(NAMESPACE, 'Projects/TidalPlankton')
+projects = util.download_and_jsonify(NAMESPACE, 'Projects', 'TidalPlankton')
 project_ids = [str(d['ProjectId']) for d in projects]
 
 # At this point, data_type_ids is probably just ('MonitorEvent', 'Reported')
 for data_type_id in data_type_ids:
     for project_id in project_ids:
         for geographical_type_id in geographical_types[data_type_id]:
-            path = '/'.join(('TidalPlankton',
-                             data_type_id,
-                             util.PRESENT_START_DATE_M_D_YYYY,
-                             util.PRESENT_END_DATE_M_D_YYYY,
-                             project_id,
-                             geographical_type_id))
-
             # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/1-16-1984/4-4-2017/9/HUC12
-            attributes = util.download_and_jsonify(NAMESPACE, path)
+            attributes = util.download_and_jsonify(NAMESPACE,
+                                                   'TidalPlankton',
+                                                   data_type_id,
+                                                   util.PRESENT_START_DATE_M_D_YYYY,
+                                                   util.PRESENT_END_DATE_M_D_YYYY,
+                                                   project_id,
+                                                   geographical_type_id)
             attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
             attribute_ids = map(str, attribute_ids)
 
             for attribute_id in attribute_ids:
-                path = '/'.join(('TidalPlankton',
-                                 data_type_id,
-                                 util.PRESENT_START_DATE_M_D_YYYY,
-                                 util.PRESENT_END_DATE_M_D_YYYY,
-                                 project_id,
-                                 geographical_type_id,
-                                 attribute_id))
                 # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/1-16-1984/4-4-2017/9/HUC12/767
-                util.download(NAMESPACE, path)
+                util.download(NAMESPACE,
+                              'TidalPlankton',
+                              data_type_id,
+                              util.PRESENT_START_DATE_M_D_YYYY,
+                              util.PRESENT_END_DATE_M_D_YYYY,
+                              project_id,
+                              geographical_type_id,
+                              attribute_id)
 
 # OK, that takes care of all 3 TidalPlankton data types. Remove TidalPlankton since it's been
 # handled.
@@ -121,18 +120,17 @@ program_ids = [program_id for program_id in program_ids if program_id != 'TidalP
 for program_id in program_ids:
     print('Starting program {}...'.format(program_id))
     # e.g. https://data.chesapeakebay.net/api.json/LivingResources/DataTypes/TidalBenthic
-    data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes/' + program_id)
+    data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes', program_id)
     data_type_ids = [d['DataTypeId'] for d in data_types]
 
-    path = '/'.join((program_id, 'GeographicalAttributes'))
     # e.g. https://data.chesapeakebay.net/api.json/LivingResources/NontidalBenthic/GeographicalAttributes
-    geographical_types = util.download_and_jsonify(NAMESPACE, path)
+    geographical_types = util.download_and_jsonify(NAMESPACE, program_id, 'GeographicalAttributes')
     geographical_type_ids = [d['GeoTypeId'] for d in geographical_types]
 
     for data_type_id in data_type_ids:
         print('Starting program {}, data type {}...'.format(program_id, data_type_id))
         # e.g. https://data.chesapeakebay.net/api.json/LivingResources/Projects/TidalBenthic
-        projects = util.download_and_jsonify(NAMESPACE, 'Projects/' + program_id)
+        projects = util.download_and_jsonify(NAMESPACE, 'Projects', program_id)
         project_ids = [str(d['ProjectId']) for d in projects]
         for project_id in project_ids:
             params = (program_id, data_type_id, project_id)
@@ -141,24 +139,24 @@ for program_id in program_ids:
                 params = (program_id, data_type_id, project_id, geographical_type_id)
                 print('Starting program {}, data type {}, project {}, geo type {}...'.format(*params))
                 # geographical_type_id is something like HUC8, FIPS, etc.
-                path = '/'.join((program_id,
-                                 data_type_id,
-                                 util.PRESENT_START_DATE_M_D_YYYY,
-                                 util.PRESENT_END_DATE_M_D_YYYY,
-                                 project_id,
-                                 geographical_type_id))
                 # https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/4-4-2012/4-4-2017/17/HUC12
-                attributes = util.download_and_jsonify(NAMESPACE, path)
+                attributes = util.download_and_jsonify(NAMESPACE
+                                                       program_id,
+                                                       data_type_id,
+                                                       util.PRESENT_START_DATE_M_D_YYYY,
+                                                       util.PRESENT_END_DATE_M_D_YYYY,
+                                                       project_id,
+                                                       geographical_type_id)
                 attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
                 attribute_ids = map(str, attribute_ids)
 
                 for attribute_id in attribute_ids:
-                    path = '/'.join((program_id,
-                                     data_type_id,
-                                     util.PRESENT_START_DATE_M_D_YYYY,
-                                     util.PRESENT_END_DATE_M_D_YYYY,
-                                     project_id,
-                                     geographical_type_id,
-                                     attribute_id))
                     # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/4-4-2012/4-4-2017/17/HUC12/781
-                    util.download(NAMESPACE, path)
+                    util.download(NAMESPACE,
+                                  program_id,
+                                  data_type_id,
+                                  util.PRESENT_START_DATE_M_D_YYYY,
+                                  util.PRESENT_END_DATE_M_D_YYYY,
+                                  project_id,
+                                  geographical_type_id,
+                                  attribute_id)
