@@ -33,11 +33,10 @@ geographical_type_ids = [d['GeoTypeId'] for d in geographical_types]
 for data_type_id in data_type_ids:
     for geographical_type_id in geographical_type_ids:
         # e.g. https://data.chesapeakebay.net/api.json/Fluorescence/Vertical/Thu%20Aug%2002%201984/Mon%20Apr%2010%202017/HUC8/
-        path = '/'.join((data_type_id,
-                         util.FLUORESCENCE_START_DATE,
-                         util.FLUORESCENCE_END_DATE,
-                         geographical_type_id))
-        attributes = util.download_and_jsonify(NAMESPACE, path)
+        attributes = util.download_and_jsonify(NAMESPACE, data_type_id,
+                                               util.FLUORESCENCE_START_DATE,
+                                               util.FLUORESCENCE_END_DATE,
+                                               geographical_type_id)
         # The attributes in this file look very similar to the same files you find in Water Quality
         # and Living Resources. They're used differently, however. Instead of using the
         # attribute IDs defined in util.GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP, fluorescence uses
@@ -65,9 +64,7 @@ for data_type_id in data_type_ids:
 
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/Fluorescence/Vertical/8-2-1984/4-10-2017/HUC8/02060002
-            path = '/'.join((data_type_id,
-                             util.FLUORESCENCE_START_DATE,
-                             util.FLUORESCENCE_END_DATE,
-                             geographical_type_id,
-                             attribute_id))
-            util.download(NAMESPACE, path)
+            path = '/'.join(())
+            util.download(NAMESPACE, data_type_id,
+                          util.FLUORESCENCE_START_DATE, util.FLUORESCENCE_END_DATE,
+                          geographical_type_id, attribute_id)

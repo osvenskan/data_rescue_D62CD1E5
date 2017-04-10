@@ -228,18 +228,17 @@ def post_attribute_ids(namespace, specifier, attribute_ids):
     return data
 
 
-def download_and_jsonify(namespace, specifier):
-    """Same as download(), but also JSONifies and returns the file contents.
-    """
-    filename = download(namespace, specifier)
+def download_and_jsonify(*path_elements):
+    """Same as download(), but also JSONifies and returns the file contents."""
+    filename = download(*path_elements)
     with open(filename, 'r') as f:
         the_json_data = json.load(f)
     return the_json_data
 
 
-def download(namespace, specifier):
-    """Given a namespace (e.g. WaterQuality) and a partial URL (e.g. Station/HUC8/3), checks to
-    see that the associated file exists, and if it does not, downloads it.
+def download(*path_elements):
+    """Given a variable number of args, combines those args into a URL, checks to see that the
+    associated file exists, and if it does not, downloads it.
     """
     global _http_connection
 
@@ -247,7 +246,7 @@ def download(namespace, specifier):
         print("Reconnecting...")
         _http_connection = _connect_to_server()
 
-    url = namespace + '/' + specifier
+    url = '/'.join(path_elements)
 
     filename = url_to_filename(url)
 
