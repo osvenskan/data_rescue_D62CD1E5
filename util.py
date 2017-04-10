@@ -45,11 +45,12 @@ PRESENT_START_DATE_ISO = datetime.datetime.strptime(PRESENT_START_DATE_M_D_YYYY,
 PRESENT_END_DATE_ISO = datetime.datetime.strptime(PRESENT_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
 
 # Fluorescence is different from the other categories and has a later start date. This is hardcoded
-# in Fluorescence.js (line 24).
-FLUORESCENCE_START_DATE_M_D_YYYY = '8-2-1984'
-FLUORESCENCE_END_DATE_M_D_YYYY = PRESENT_END_DATE_M_D_YYYY
-FLUORESCENCE_START_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_START_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
-FLUORESCENCE_END_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
+# in Fluorescence.js (line 24). In addition, the fluorescence URLs want the start date in a
+# FIXME dates (esp end date) need better handling; end date not DRY
+FLUORESCENCE_START_DATE = 'Thu Aug 02 1984'
+FLUORESCENCE_END_DATE = 'Fri Mar 31 2017'
+FLUORESCENCE_START_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_START_DATE, '%a %b %d %Y').date().isoformat()
+FLUORESCENCE_END_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_END_DATE, '%a %b %d %Y').date().isoformat()
 
 
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
@@ -117,6 +118,8 @@ def url_to_filename(url):
     http://data.chesapeakebay.net/api.JSON/WaterQuality/WaterQuality/1-16-1984/3-31-2017/2/12/HUC8/4/30 ==>
     ../data/WaterQuality/WaterQuality/1984-01-16_to_2017-03-31/2/12/HUC8/4/30.json
 
+    This must be called *before* any special characters are URL-encoded (like the spaces in the
+    fluorescence dates).
     """
     url = url.replace("api.JSON", "api.json")
 
@@ -139,7 +142,7 @@ def url_to_filename(url):
     if date_range in url:
         url = url.replace(date_range, PRESENT_START_DATE_ISO + '_to_' + PRESENT_END_DATE_ISO)
 
-    date_range = FLUORESCENCE_START_DATE_M_D_YYYY + '/' + FLUORESCENCE_END_DATE_M_D_YYYY
+    date_range = FLUORESCENCE_START_DATE + '/' + FLUORESCENCE_END_DATE
     if date_range in url:
         url = url.replace(date_range, FLUORESCENCE_START_DATE_ISO + '_to_' + FLUORESCENCE_END_DATE_ISO)
 
