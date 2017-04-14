@@ -36,6 +36,18 @@ class PointSourceDate(datetime.date):
         """Return m-d-yyyy, e.g. 2-14-2017 for Feb 14th 2017"""
         return '{}-{}-{}'.format(self.month, self.day, self.year)
 
+class ToxicsDate(datetime.date):
+    """Toxics makes things difficult by using 2 different date formats"""
+    @property
+    def url_format_for_geographic_type(self):
+        """Return e.g. Tue Feb 14 2017"""
+        return self.strftime('%a %b %d %Y')
+
+    @property
+    def url_format_for_attribute(self):
+        """Return m-d-yyyy, e.g. 2-14-2017 for Feb 14th 2017"""
+        return '{}-{}-{}'.format(self.month, self.day, self.year)
+
 
 DATES = {}
 DATES['WaterQualityHistorical'] = DateRange(start=WaterQualityDate(1949, 7, 2),
@@ -56,6 +68,10 @@ DATES['Fluorescence'] = DateRange(start=FluorescenceDate(1984, 8, 2),
 DATES['PointSource'] = DateRange(start=PointSourceDate(1970, 1, 1),
                                  end=PointSourceDate(*END_DATE))
 
+# Toxics start date hardcoded in Toxics.js (onChangeStartDateDatePicker(), line 4).
+DATES['Toxics'] = DateRange(start=PointSourceDate(1970, 1, 1),
+                            end=PointSourceDate(*END_DATE))
+
 # URL_DATE_TO_FILENAME_MAP maps date range pairs in URL format to the same ranges in ISO (filename)
 # format. It's meant to encapsulate date mapping mess so that util.url_to_filename() doesn't have
 # to know very much at all about dates.
@@ -69,16 +85,17 @@ for category in ('WaterQualityHistorical', 'WaterQualityModern', 'LivingResource
     URL_DATE_TO_FILENAME_MAP[url_date] = \
         DATES[category].start.isoformat() + '_to_' + DATES[category].end.isoformat()
 
-# PointSource requires special handling.
-url_date = DATES['PointSource'].start.url_format_for_geographic_type + '/' + \
-           DATES['PointSource'].end.url_format_for_geographic_type
-URL_DATE_TO_FILENAME_MAP[url_date] = \
-    DATES['PointSource'].start.isoformat() + '_to_' + DATES['PointSource'].end.isoformat()
+# PointSource and Toxics get different handling.
+for category in ('PointSource', 'Toxics'):
+    url_date = DATES[category].start.url_format_for_geographic_type + '/' + \
+               DATES[category].end.url_format_for_geographic_type
+    URL_DATE_TO_FILENAME_MAP[url_date] = \
+        DATES[category].start.isoformat() + '_to_' + DATES[category].end.isoformat()
 
-url_date = DATES['PointSource'].start.url_format_for_attribute + '/' + \
-           DATES['PointSource'].end.url_format_for_attribute
-URL_DATE_TO_FILENAME_MAP[url_date] = \
-    DATES['PointSource'].start.isoformat() + '_to_' + DATES['PointSource'].end.isoformat()
+    url_date = DATES[category].start.url_format_for_attribute + '/' + \
+               DATES[category].end.url_format_for_attribute
+    URL_DATE_TO_FILENAME_MAP[url_date] = \
+        DATES[category].start.isoformat() + '_to_' + DATES[category].end.isoformat()
 
 
 
