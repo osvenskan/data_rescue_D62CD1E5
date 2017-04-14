@@ -9,8 +9,12 @@ pp=pprint.pprint
 
 # Project imports
 import util
+import util_date
 
 NAMESPACE = 'WaterQuality'
+
+DATE_RANGE_HISTORICAL = util_date.DATES['WaterQualityHistorical']
+DATE_RANGE_MODERN = util_date.DATES['WaterQualityModern']
 
 """
 WaterQuality data has 2 top-level categories -- CBI (historical) and present data. CBI data runs
@@ -57,8 +61,8 @@ for geographical_type_id in geographical_type_ids:
     #
     attributes = util.download_and_jsonify(NAMESPACE,
                                            'CBI',
-                                           util.HISTORICAL_START_DATE_M_D_YYYY,
-                                           util.HISTORICAL_END_DATE_M_D_YYYY,
+                                           DATE_RANGE_HISTORICAL.start.url_format,
+                                           DATE_RANGE_HISTORICAL.end.url_format,
                                            geographical_type_id)
 
     attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
@@ -67,8 +71,8 @@ for geographical_type_id in geographical_type_ids:
         # e.g. https://data.chesapeakebay.net/api.JSON/WaterQuality/CBI/7-2-1949/8-13-1982/HUC12/20
         util.download(NAMESPACE,
                       'CBI',
-                      util.HISTORICAL_START_DATE_M_D_YYYY,
-                      util.HISTORICAL_END_DATE_M_D_YYYY,
+                      DATE_RANGE_HISTORICAL.start.url_format,
+                      DATE_RANGE_HISTORICAL.end.url_format,
                       geographical_type_id,
                       attribute_id)
 
@@ -123,8 +127,8 @@ for data_type in data_types:
                 # https://data.chesapeakebay.net/api.json/WaterQuality/OpticalDensity/3-29-2012/3-29-2017/2/12/HUC8/
                 attributes = util.download_and_jsonify(NAMESPACE,
                                                        data_type,
-                                                       util.PRESENT_START_DATE_M_D_YYYY,
-                                                       util.PRESENT_END_DATE_M_D_YYYY,
+                                                       DATE_RANGE_MODERN.start.url_format,
+                                                       DATE_RANGE_MODERN.end.url_format,
                                                        program_id,
                                                        project_id,
                                                        geographical_type_id)
@@ -173,8 +177,8 @@ for data_type in data_types:
                 for attribute_id in attribute_ids:
                     path = [NAMESPACE,
                             data_type,
-                            util.PRESENT_START_DATE_M_D_YYYY,
-                            util.PRESENT_END_DATE_M_D_YYYY,
+                            DATE_RANGE_MODERN.start.url_format,
+                            DATE_RANGE_MODERN.end.url_format,
                             program_id,
                             project_id,
                             geographical_type_id,

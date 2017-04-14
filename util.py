@@ -8,6 +8,8 @@ import time
 import json
 import http.client
 
+import util_date
+
 HOST = 'data.chesapeakebay.net'
 
 # The host accepts api.json and api.JSON in the URLs. Our convention is to always use lower case.
@@ -31,27 +33,6 @@ N_CONNECTION_RETRIES = 3
 # N_DOWNLOAD_RETRIES expresses the number of attempts at downloading a file despite errors
 # (e.g. connection reset) before giving up entirely.
 N_DOWNLOAD_RETRIES = 3
-
-# I love ISO format, but when your API specifies M/D/YYYY format, that's what you gotta use.
-HISTORICAL_START_DATE_M_D_YYYY = '7-2-1949'
-HISTORICAL_END_DATE_M_D_YYYY = '8-13-1982'
-HISTORICAL_START_DATE_ISO = datetime.datetime.strptime(HISTORICAL_START_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
-HISTORICAL_END_DATE_ISO = datetime.datetime.strptime(HISTORICAL_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
-
-# "Present" water quality data begins 16 Jan 1984. This is hardcoded in WaterQuality.js (line 232)
-PRESENT_START_DATE_M_D_YYYY = '1-16-1984'
-PRESENT_END_DATE_M_D_YYYY = '3-31-2017'
-PRESENT_START_DATE_ISO = datetime.datetime.strptime(PRESENT_START_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
-PRESENT_END_DATE_ISO = datetime.datetime.strptime(PRESENT_END_DATE_M_D_YYYY, '%m-%d-%Y').date().isoformat()
-
-# Fluorescence is different from the other categories and has a later start date. This is hardcoded
-# in Fluorescence.js (line 24). In addition, the fluorescence URLs want the start date in a
-# FIXME dates (esp end date) need better handling; end date not DRY
-FLUORESCENCE_START_DATE = 'Thu Aug 02 1984'
-FLUORESCENCE_END_DATE = 'Fri Mar 31 2017'
-FLUORESCENCE_START_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_START_DATE, '%a %b %d %Y').date().isoformat()
-FLUORESCENCE_END_DATE_ISO = datetime.datetime.strptime(FLUORESCENCE_END_DATE, '%a %b %d %Y').date().isoformat()
-
 
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
 # used to represent them in the JSON. This same map is hardcoded in the various JavaScript files
@@ -134,17 +115,9 @@ def url_to_filename(url):
     if url.startswith('/'):
         url = url[1:]
 
-    date_range = HISTORICAL_START_DATE_M_D_YYYY + '/' + HISTORICAL_END_DATE_M_D_YYYY
-    if date_range in url:
-        url = url.replace(date_range, HISTORICAL_START_DATE_ISO + '_to_' + HISTORICAL_END_DATE_ISO)
-
-    date_range = PRESENT_START_DATE_M_D_YYYY + '/' + PRESENT_END_DATE_M_D_YYYY
-    if date_range in url:
-        url = url.replace(date_range, PRESENT_START_DATE_ISO + '_to_' + PRESENT_END_DATE_ISO)
-
-    date_range = FLUORESCENCE_START_DATE + '/' + FLUORESCENCE_END_DATE
-    if date_range in url:
-        url = url.replace(date_range, FLUORESCENCE_START_DATE_ISO + '_to_' + FLUORESCENCE_END_DATE_ISO)
+    for url_format, filename_format in util_date.URL_DATE_TO_FILENAME_MAP.items():
+        if url_format in url:
+            url = url.replace(url_format, filename_format)
 
     url += '.json'
 

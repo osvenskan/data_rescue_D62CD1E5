@@ -9,9 +9,11 @@ pp=pprint.pprint
 
 # Project imports
 import util
+import util_date
 
 NAMESPACE = 'Fluorescence'
 
+DATE_RANGE = util_date.DATES[NAMESPACE]
 
 """
 Fluorescence's top level category is called Data Types, and as of this writing there's only two
@@ -34,8 +36,8 @@ for data_type_id in data_type_ids:
     for geographical_type_id in geographical_type_ids:
         # e.g. https://data.chesapeakebay.net/api.json/Fluorescence/Vertical/Thu%20Aug%2002%201984/Mon%20Apr%2010%202017/HUC8/
         attributes = util.download_and_jsonify(NAMESPACE, data_type_id,
-                                               util.FLUORESCENCE_START_DATE,
-                                               util.FLUORESCENCE_END_DATE,
+                                               DATE_RANGE.start.url_format,
+                                               DATE_RANGE.end.url_format,
                                                geographical_type_id)
         # The attributes in this file look very similar to the same files you find in Water Quality
         # and Living Resources. They're used differently, however. Instead of using the
@@ -65,6 +67,9 @@ for data_type_id in data_type_ids:
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/Fluorescence/Vertical/8-2-1984/4-10-2017/HUC8/02060002
             path = '/'.join(())
-            util.download(NAMESPACE, data_type_id,
-                          util.FLUORESCENCE_START_DATE, util.FLUORESCENCE_END_DATE,
-                          geographical_type_id, attribute_id)
+            util.download(NAMESPACE,
+                          data_type_id,
+                          DATE_RANGE.start.url_format,
+                          DATE_RANGE.end.url_format,
+                          geographical_type_id,
+                          attribute_id)

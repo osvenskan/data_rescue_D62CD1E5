@@ -9,8 +9,11 @@ pp=pprint.pprint
 
 # Project imports
 import util
+import util_date
 
 NAMESPACE = 'LivingResources'
+
+DATE_RANGE = util_date.DATES[NAMESPACE]
 
 """
 LivingResources data has 3 top-level categories (programs) -- Tidal Plankton Data, Tidal Benthic
@@ -94,8 +97,8 @@ for data_type_id in data_type_ids:
             attributes = util.download_and_jsonify(NAMESPACE,
                                                    'TidalPlankton',
                                                    data_type_id,
-                                                   util.PRESENT_START_DATE_M_D_YYYY,
-                                                   util.PRESENT_END_DATE_M_D_YYYY,
+                                                   DATE_RANGE.start.url_format,
+                                                   DATE_RANGE.end.url_format,
                                                    project_id,
                                                    geographical_type_id)
             attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
@@ -106,8 +109,8 @@ for data_type_id in data_type_ids:
                 util.download(NAMESPACE,
                               'TidalPlankton',
                               data_type_id,
-                              util.PRESENT_START_DATE_M_D_YYYY,
-                              util.PRESENT_END_DATE_M_D_YYYY,
+                              DATE_RANGE.start.url_format,
+                              DATE_RANGE.end.url_format,
                               project_id,
                               geographical_type_id,
                               attribute_id)
@@ -140,11 +143,11 @@ for program_id in program_ids:
                 print('Starting program {}, data type {}, project {}, geo type {}...'.format(*params))
                 # geographical_type_id is something like HUC8, FIPS, etc.
                 # https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/4-4-2012/4-4-2017/17/HUC12
-                attributes = util.download_and_jsonify(NAMESPACE
+                attributes = util.download_and_jsonify(NAMESPACE,
                                                        program_id,
                                                        data_type_id,
-                                                       util.PRESENT_START_DATE_M_D_YYYY,
-                                                       util.PRESENT_END_DATE_M_D_YYYY,
+                                                       DATE_RANGE.start.url_format,
+                                                       DATE_RANGE.end.url_format,
                                                        project_id,
                                                        geographical_type_id)
                 attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
@@ -155,8 +158,8 @@ for program_id in program_ids:
                     util.download(NAMESPACE,
                                   program_id,
                                   data_type_id,
-                                  util.PRESENT_START_DATE_M_D_YYYY,
-                                  util.PRESENT_END_DATE_M_D_YYYY,
+                                  DATE_RANGE.start.url_format,
+                                  DATE_RANGE.end.url_format,
                                   project_id,
                                   geographical_type_id,
                                   attribute_id)
