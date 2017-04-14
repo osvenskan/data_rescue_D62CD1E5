@@ -102,34 +102,3 @@ reference_ids = [d['REF_DOC_ID'] for d in references]
 for reference_id in reference_ids:
     # https://data.chesapeakebay.net/api.JSON/Toxics/ReferenceInformation/R0000209
     util.download(NAMESPACE, 'ReferenceInformation', reference_id)
-
-
-# # Data Type FacilityInformation
-# for geographical_type_id in geographical_type_ids:
-#     # e.g. https://data.chesapeakebay.net/api.json/PointSource/FacilityInformation/FIPS/
-#     attributes = util.download_and_jsonify(NAMESPACE, 'FacilityInformation', geographical_type_id)
-#     attribute_ids = extract_attribute_ids(geographical_type_id, attributes)
-#     for attribute_id in attribute_ids:
-#         # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/FacilityInformation/Facility/DC0000094
-#         util.download(NAMESPACE, 'FacilityInformation', geographical_type_id, attribute_id)
-
-
-# # Data Type LoadData
-# for geographical_type_id in geographical_type_ids:
-#     # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/Sat%20Apr%2001%202017/Mon%20Apr%2010%202017/FIPS/
-#     attributes = util.download_and_jsonify(NAMESPACE,
-#                                            'LoadData',
-#                                            DATE_RANGE.start.url_format_for_geographic_type,
-#                                            DATE_RANGE.end.url_format_for_geographic_type,
-#                                            geographical_type_id)
-
-#     attribute_ids = extract_attribute_ids(geographical_type_id, attributes)
-#     for attribute_id in attribute_ids:
-#         # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/1-1-1970/4-14-2017/Facility/DC0000019
-#         # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/1-1-1970/4-10-2017/State/PA
-#         util.download(NAMESPACE,
-#                       'LoadData',
-#                       DATE_RANGE.start.url_format_for_attribute,
-#                       DATE_RANGE.end.url_format_for_attribute,
-#                       geographical_type_id,
-#                       attribute_id)
