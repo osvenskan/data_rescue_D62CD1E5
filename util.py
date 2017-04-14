@@ -34,6 +34,11 @@ N_CONNECTION_RETRIES = 3
 # (e.g. connection reset) before giving up entirely.
 N_DOWNLOAD_RETRIES = 3
 
+# JSON_INDENT controls whether or not the JSON written to disk will be formatted. Set to
+# None to write JSON in the most compact format. Set to '\t' to pretty print. (See doc for the
+# indent param to json.dump().)
+JSON_INDENT = '\t'
+
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
 # used to represent them in the JSON. This same map is hardcoded in the various JavaScript files
 # so I feel pretty safe hardcoding it here.
@@ -196,7 +201,7 @@ def post_attribute_ids(namespace, specifier, attribute_ids):
         data = json.loads(data)
         create_filename_directories(filename)
         with open(filename, 'w') as f:
-            json.dump(data, f, indent='\t')
+            json.dump(data, f, indent=JSON_INDENT)
 
     return data
 
@@ -277,6 +282,6 @@ def download(*path_elements):
         # Second, so that I can write it to disk nicely formatted (which helps with debugging).
         data = json.loads(data)
         with open(filename, 'w') as f:
-            json.dump(data, f, indent='\t')
+            json.dump(data, f, indent=JSON_INDENT)
 
     return filename
