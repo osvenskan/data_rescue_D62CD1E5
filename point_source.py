@@ -9,6 +9,7 @@ pp=pprint.pprint
 
 # Project imports
 import util
+import util_date
 
 NAMESPACE = 'PointSource'
 
@@ -22,6 +23,12 @@ Beneath that, there's a subdivision of Geographical attributes (FIPS, State, Fac
 
 Those two categories and (sometimes) a date range cover everything in PointSource.
 """
+
+def extract_attribute_ids(geographical_type_id, attributes):
+    """PointSource-specific version of util.extract_attribute_ids() (q.v.)"""
+    id_name = 'NPDES' if geographical_type_id == 'Facility' else geographical_type_id
+    return [attribute[id_name] for attribute in attributes]
+
 
 # https://data.chesapeakebay.net/api.json/PointSource/DataTypes
 data_types = util.download_and_jsonify(NAMESPACE, 'DataTypes')
@@ -42,29 +49,7 @@ geographical_type_ids = [d['GeoTypeId'] for d in geographical_types]
 for geographical_type_id in geographical_type_ids:
     # e.g. https://data.chesapeakebay.net/api.json/PointSource/FacilityInformation/FIPS/
     attributes = util.download_and_jsonify(NAMESPACE, 'FacilityInformation', geographical_type_id)
-
-    # The attributes in this file look very similar to the same files you find in Water Quality
-    # and Living Resources. They're used differently, however. Instead of using the
-    # attribute IDs defined in util.GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP, PointSource uses
-    # the value of the geographical_type_id. (Fluorescence does the same.)
-    # For instance, using this sample data --
-    #     [{"FIPS": "24001",
-    #       "County_City": "ALLEGANY",
-    #       "State": "MD"
-    #      }, {
-    #       "FIPS": "24003",
-    #       "County_City": "ANNE ARUNDEL",
-    #       "State": "MD"
-    #     }, {
-    #       "FIPS": "24005",
-    #       "County_City": "BALTIMORE",
-    #       "State": "MD"
-    #     }
-    # We want to extract the ids ('24001', '24003', '24005').
-    #
-    # That's true except for the geo type 'Facility'.
-    id_name = 'NPDES' if geographical_type_id == 'Facility' else geographical_type_id
-    attribute_ids = [d[id_name].strip() for d in attributes]
+    attribute_ids = extract_attribute_ids(geographical_type_id, attributes)
     for attribute_id in attribute_ids:
         # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/FacilityInformation/Facility/DC0000094
         util.download(NAMESPACE, 'FacilityInformation', geographical_type_id, attribute_id)
@@ -75,10 +60,17 @@ for geographical_type_id in geographical_type_ids:
     # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/Sat%20Apr%2001%202017/Mon%20Apr%2010%202017/FIPS/
     attributes = util.download_and_jsonify(NAMESPACE,
                                            'LoadData',
-                                           DATE_RANGE.start.url_format,
-                                           DATE_RANGE.end.url_format,
+                                           DATE_RANGE.start.url_format_for_geographic_type,
+                                           DATE_RANGE.end.url_format_for_geographic_type,
                                            geographical_type_id)
 
-# leaf nodes use a URL like this:
-# https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/1-1-1970/4-10-2017/State/PA
-
+    attribute_ids = extract_attribute_ids(geographical_type_id, attributes)
+    for attribute_id in attribute_ids:
+        # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/1-1-1970/4-14-2017/Facility/DC0000019
+        # e.g. https://data.chesapeakebay.net/api.JSON/PointSource/LoadData/1-1-1970/4-10-2017/State/PA
+        util.download(NAMESPACE,
+                      'LoadData',
+                      DATE_RANGE.start.url_format_for_attribute,
+                      DATE_RANGE.end.url_format_for_attribute,
+                      geographical_type_id,
+                      attribute_id)
