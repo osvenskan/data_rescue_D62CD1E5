@@ -30,7 +30,16 @@ GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP = {'HUC8': 'HUC8',
 def extract_attribute_ids(geographical_type_id, attributes):
     """Toxics-specific version of util.extract_attribute_ids() (q.v.)"""
     id_name = GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP[geographical_type_id]
-    return [attribute[id_name] for attribute in attributes]
+    # A few of the attribute ids under the data type ChemicalContaminant contain spaces. One
+    # such example is in the geo type HUC8, where there's this attribute id: "UNK     "
+    # (which stands for "unknown"). That ends up looking like this in a URL:
+    #     /api.json/Toxics/ChemicalContaminant/1-1-1970/3-31-2017/HUC8/UNK%20%20%20%20%20/BIL
+    # and like this in a filename:
+    #     ../data/Toxics/ChemicalContaminant/1970-01-01_to_2017-03-31/HUC8/UNK     /BIL.json
+    # It turns out that removing the space to get this URL also returns the same data:
+    #     /api.json/Toxics/ChemicalContaminant/1-1-1970/3-31-2017/HUC8/UNK/BIL
+    # So here I .strip() all of the attribute ids to get rid of the spaces.
+    return [attribute[id_name].strip() for attribute in attributes]
 
 
 # https://data.chesapeakebay.net/api.json/Toxics/DataTypes
