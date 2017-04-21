@@ -196,7 +196,7 @@ def post_attribute_ids(namespace, specifier, attribute_ids):
             data = f.read()
 
         print('Writing {}...'.format(filename))
-        # Deserialize to accomplish 2 things -- first, tests that what I got is valid JSON.
+        # Deserialize to accomplish 2 things -- first, test that what I got is valid JSON.
         # Second, so that I can write it to disk nicely formatted (which helps with debugging).
         data = json.loads(data)
         create_filename_directories(filename)
