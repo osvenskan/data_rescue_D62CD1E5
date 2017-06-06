@@ -1,8 +1,17 @@
+"""The dates in this project are messy; this attempts to isolate most of the mess into one module.
+
+Each of the 5 top level categories (Water Quality, Fluorescence, etc.) has a date class here.
+The DATES dict contains 6 date ranges (one for each top level category, plus an extra because
+Water Quality has modern & historical date ranges) that define the oldest and most recent
+dates for which data is available. Except for historical water quality data (which ends in
+August 1982), the end range for all data is governed by the END_DATE constant below.
+
+In addition, this module provides URL_DATE_TO_FILENAME_MAP which is explained by an inline comment.
+"""
 import datetime
 import collections
 
-#END_DATE = datetime.datetime(2017, 3, 31)
-END_DATE = (2017, 3, 31)
+END_DATE = (2017, 5, 31)
 
 DateRange = collections.namedtuple('DateRange', ['start', 'end'])
 
