@@ -146,8 +146,15 @@ for data_type in data_types:
                     # all the attribute ids would be too long in some cases?
 
                     # From line 178 of WaterQuality.js
-                    parameters = util.post_attribute_ids(NAMESPACE, path + '/Parameters',
-                                                         attribute_ids)
+                    parameters = util.post_attribute_ids(attribute_ids,
+                                                         NAMESPACE,
+                                                         data_type,
+                                                         DATE_RANGE_MODERN.start.url_format,
+                                                         DATE_RANGE_MODERN.end.url_format,
+                                                         program_id,
+                                                         project_id,
+                                                         geographical_type_id,
+                                                         'Parameters')
 
                     # Parameters is a list of dicts; here's an example of one --
                     #    {'HUCEightId': 20,
