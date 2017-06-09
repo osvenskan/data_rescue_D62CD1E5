@@ -37,7 +37,7 @@ N_DOWNLOAD_RETRIES = 3
 # JSON_INDENT controls whether or not the JSON written to disk will be formatted. Set to
 # None to write JSON in the most compact format. Set to '\t' to pretty print. (See doc for the
 # indent param to json.dump().)
-JSON_INDENT = '\t'
+JSON_INDENT = None
 
 # GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP maps the 6 geographical types to the text strings of the IDs
 # used to represent them in the JSON. This same map is hardcoded in the various JavaScript files
