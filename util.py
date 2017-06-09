@@ -19,7 +19,7 @@ BASE_URL = '/api.json'
 # destination server. This data is organized into lots and lots of small files, and each file
 # download pauses for the POLITENESS_DELAY, so adjusting this just a little can have a big
 # effect on how long it takes to complete a set of downloads.
-# As of March 2017, http://datahub.chesapeakebay.net/robots.txt doesn't exist, so the site itself
+# As of June 2017, http://datahub.chesapeakebay.net/robots.txt doesn't exist, so the site itself
 # gives us no guidance on what a polite crawl delay might be.
 POLITENESS_DELAY = 0.5
 
@@ -175,24 +175,27 @@ def create_filename_directories(filename):
     os.makedirs(path, exist_ok=True)
 
 
-def post_attribute_ids(namespace, specifier, attribute_ids):
+def post_attribute_ids(attribute_ids, *path_elements):
     """POSTs a list of attribute IDs to the URL specified and returns the JSON response."""
-    url_path = BASE_URL + '/' + namespace + '/' + specifier
+    url = '/'.join([str(path_element) for path_element in path_elements])
 
-    filename = url_to_filename(url_path)
+    filename = url_to_filename(url)
 
     if os.path.exists(filename):
-        print('{} already exists; skipping download.'.format(filename))
+        print('{} already exists; skipping.'.format(filename))
         with open(filename, 'rb') as f:
             data = json.load(f)
     else:
-        print('POSTing to {}...'.format(url_path))
+        time.sleep(POLITENESS_DELAY)
 
+        url = BASE_URL + '/' + urllib.parse.quote(url)
+        print('POSTing to {}...'.format(url))
+        # Construct params for POST
         data = {'parametersList': ','.join([str(attribute_id) for attribute_id in attribute_ids])}
         data = urllib.parse.urlencode(data)
         data = data.encode('utf-8')
 
-        with urllib.request.urlopen('http://' + HOST + url_path, data) as f:
+        with urllib.request.urlopen('http://' + HOST + url, data) as f:
             data = f.read()
 
         print('Writing {}...'.format(filename))
@@ -224,7 +227,7 @@ def download(*path_elements):
         print("Reconnecting...")
         _http_connection = _connect_to_server()
 
-    url = '/'.join(path_elements)
+    url = '/'.join([str(path_element) for path_element in path_elements])
 
     filename = url_to_filename(url)
 
@@ -235,45 +238,13 @@ def download(*path_elements):
 
         url = BASE_URL + '/' + urllib.parse.quote(url)
         print('Downloading {}...'.format(url))
-        data_received = False
-        n_retries = N_DOWNLOAD_RETRIES
-        while not data_received and n_retries:
-            if not _http_connection:
-                _http_connection = _connect_to_server()
-
-            try:
-                _http_connection.request('GET', url)
-            except http.client.NotConnected:
-                # Connection was dropped
-                if n_retries:
-                    _http_connection = None
-                    print('Connection was dropped; will retry {} times.'.format(n_retries))
-                    n_retries -= 1
-                else:
-                    # Print timestamp so that I know when this died. It's useful when I'm
-                    # running this overnight.
-                    print(datetime.datetime.now().isoformat())
-                    raise
-
-            if _http_connection:
-                try:
-                    response = _http_connection.getresponse()
-                except ConnectionResetError:
-                    if n_retries:
-                        _http_connection = None
-                        print('Connection was reset; will retry {} times.'.format(n_retries))
-                        n_retries -= 1
-                    else:
-                        # Print timestamp so that I know when this died. It's useful when I'm
-                        # running this overnight.
-                        print(datetime.datetime.now().isoformat())
-                        raise
-                else:
-                    if response.status == 200:
-                        data = response.read()
-                        data_received = True
-                    else:
-                        raise ValueError("response.status == {}".format(response.status))
+        _http_connection.request('GET', url)
+        response = _http_connection.getresponse()
+        if response.status == 200:
+            data = response.read()
+            data_received = True
+        else:
+            raise ValueError("response.status == {}".format(response.status))
 
         create_filename_directories(filename)
 
