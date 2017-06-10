@@ -43,7 +43,7 @@ for data_type_id in data_type_ids:
         # and Living Resources. They're used differently, however. Instead of using the
         # attribute IDs defined in util.GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP, fluorescence uses
         # the value of the geographical_type_id.
-        # For instance, using this sample data --
+        # For instance, using this sample data (note trailing spaces in strings) --
         #     [{
         #         "HUCEightId": 76,
         #         "HUC8": "02050306  ",
