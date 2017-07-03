@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/Content/Images/favicon.ico">  
+    <title>DataHub</title>
+
+    <link href="/Content/cssreset.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/bootstrap.css" rel="stylesheet" />
+    <link href="/Content/kendo.common-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/kendo.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/multi-select.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/myraid-pro-font.css" rel="stylesheet" />
+    <link href="/Content/Site.css" rel="stylesheet" type="text/css" />
+
+    <script src="/Scripts/lib/jquery-2.1.3.min.js"></script>
+    <script src="/Scripts/lib/kendo.all.min.js"></script>
+    <script src="/Scripts/lib/jquery.multi-select.js"></script>
+    <script src="/Scripts/lib/bootstrap.min.js"></script>
+    <script src="/Scripts/lib/js.cookie.js"></script>
+    <script src="/Scripts/DataHub.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script> 
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-71957162-5', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+</head>
+<body>
+    <div class="title-bar">
+        <div id="versionNum">
+            Version 4.1.3
+        </div>
+        <div class="header-container"style="display:block;">
+            <div class="logo-container">
+                <div style="display:inline-block;">
+                    <a href="../"><img src="/Content/Images/chesapeakebay-logo.png" /></a>
+                    <a href="/">DataHub</a>
+                </div>
+            </div>
+            <button class="navbar-button" style="background-color:transparent;float:right;">
+                <img style="height:26px;width:26px;" src="/Content/Images/fa-reorder-01.svg" />
+            </button>
+        </div>
+        <div class="nav-tree">
+            <ul>
+                <li id="home"><a href="Home">Home</a></li>
+                <li id="water-quality"><a href="/WaterQuality">Water Quality</a></li>
+                <li id="living-resources"><a href="/LivingResources">Living Resources</a></li>
+                <li id="fluorescence"><a href="/Fluorescence">Fluorescence</a></li>
+                <li id="point-source"><a href="/PointSource">Nutrient Point Source</a></li>
+                <li id="toxics"><a href="/Toxics">Toxics</a></li>
+                <li id="api"><a href="/API">API</a></li>
+                <li id="contact-us"><a href="/ContactUs">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div id="main-body">
+        <div id="model">
+            
+<div id="LivingResourcesModel">
+    <div class="col-md-offset-2 col-md-8 col-sm-12 panel-well">
+
+        <div class="row">
+    <div class="col-md-12 col-sm-12" style="position:absolute;top:10px;">
+        <div style="width:100%" data-animation-duration="100" data-role="progressbar" data-show-status="false" data-min="0" data-max="100" data-bind="visible:progressBarVisible,value:progressBarValue, events: {start:progressBarChange,change: progressBarChange,complete:progressBarComplete}"></div>
+    </div>
+</div>
+
+
+        <div class="form-group row">
+            <div class="col-sm-12 col-md-12">
+                <h1>Living Resources</h1>
+            </div>
+            <div class="col-md-12 col-sm-12" style="font-size:12px;line-height: 10px;">
+                <p><b>Data Type</b>: Plankton, phytoplankton, zooplankton, mesozooplankton, gelatinous zooplankton, primary production,Non-Tidal Benthic Data,Benthos</p>
+                <p>Data is currently being collected under the following grants: CB98361804, CB98385303, CB98382503,.</p>
+                <p style="color:red"><b>Alert:</b> Due to changes in benthic IBI calculation protocol, we have recalculated all benthic IBI data. If you have downloaded data prior to January 21, 2003, you should download the new IBI data. We apologize for the inconvenience.</p>
+                <p style="color:red">
+                    At this time, the Chesapeake Bay Program is unable to provide Maryland Department of Natural Resources Biological Stream Survey data to our users.
+                    We apologize for the inconvenience.
+                </p>
+                <p>Please contact the following individual for all MBSS data requests:</p>
+                <p>Michael Kashiwagi: mkashiwagi@dnr.state.md.us</p>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-sm-12 container" style="height: 100%;">
+            <section class="text-center" style="width: 100%">
+
+                <div id="programContainer" class="form-group row">
+                    <label for="programDropDownList" class="col-md-2">Source:</label>
+                    <div class="col-md-9">
+                        <input id="programDropDownList" data-role="dropdownlist"
+                               data-auto-bind="false"
+                               data-text-field="ProgramName"
+                               data-value-field="ProgramId"
+                               data-option-label="Select a Source..."
+                               data-value-template="programDropDownListValueTemplate"
+                               data-template="programDropDownListTemplate"
+                               data-bind="value: programValue, source: programDropDownSource, events: { change: onChangeProgramDropDown}"
+                               style="width: 100%;" />
+                        <script id="programDropDownListValueTemplate" type="text/x-kendo-template">
+                            #if(!data.ProgramIdentifier){#
+                            <div>#:data.ProgramName#</div>
+                            #}else{#
+                            <div>#:data.ProgramName#</div>
+                            #}#
+                            <div class="clearfix"></div>
+                        </script>
+                        <script id="programDropDownListTemplate" type="text/x-kendo-template">
+                            #if(!data.ProgramIdentifier){#
+                            <div>#:data.ProgramName#</div>
+                            #}else{#
+                            <div>#:data.ProgramName#</div>
+                            #}#
+                        </script>
+                    </div>
+                    <div class="col-md-1" style="height:29px">
+                        <div class="vertical-align form-tooltip">
+                            <i class="tooltip-question-circle"
+                               data-role="tooltip"
+                               data-width="375"
+                               data-position="right"
+                               data-content="">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dataTypeContainer" class="form-group row" style="display: none">
+    <label for="dataTypeDropDownList" class="col-md-2">Data Type:</label>
+    <div class="col-md-9">
+        <input id="dataTypeDropDownList" data-role="dropdownlist"
+               data-auto-bind="false"
+               data-option-label="Select Data Type..."
+               data-text-field="DataTypeName"
+               data-value-field="DataTypeId"
+               data-bind="value: dataTypeValue, source: dataTypeDropDownSource, events: { change: onChangeDataTypeDropDown }"
+               style="width: 100%" />
+    </div>
+    <div class="col-md-1" style="height:29px">
+        <div class="vertical-align form-tooltip">
+            <i class="tooltip-question-circle"
+               data-role="tooltip"
+               data-width="375"
+               data-position="right"
+               data-content="">
+            </i>
+        </div>
+    </div>
+</div>
+
+                <div id="dateRangeContainer" class="form-group row" style="display: none">
+    <label for="startDate" class="col-md-2 col-sm-1">Start Date:</label>
+    <div class="col-md-4 col-sm-5">
+        <input id="startDate" data-role="datepicker"
+               data-bind="value:startDateValue,max:endDateValue,events:{change:onChangeStartDateDatePicker}"
+               style="width:100%;" />
+    </div>
+    <label for="endDate" class="col-md-1 col-sm-1">End Date:</label>
+    <div class="col-md-4 col-sm-5">
+        <input id="endDate" data-role="datepicker"
+               data-bind="value:endDateValue,min:startDateValue,events:{change:onChangeEndDateDatePicker}"
+               style="width:100%;" />
+    </div>
+    <div class="col-md-9" id="divDateAlert" style="display: none">
+        <label id="dateAlert" for="dateAlert" style="color: red;font-size: 13px; ">Alert: The End Date must come after the Start Date.</label>
+    </div>
+    <div class="col-md-9" id="divDateAlertWQPresent" style="display: none">
+        <label id="dateAlertWQPresent" for="dateAlertWQPresent" style="color: red;font-size: 13px; ">Alert: The Start or End Date cannot be before 1/16/1984.</label>
+    </div>
+    <div class="col-md-9" id="divStartDateAlertWQHistoric" style="display: none">
+        <label id="startDateAlertWQHistoric" for="startDateAlertWQHistoric" style="color: red;font-size: 13px; ">Alert: The Start Date cannot be before 7/2/1949.</label>
+    </div>
+    <div class="col-md-9" id="divEndDateAlertWQHistoric" style="display: none">
+        <label id="endDateAlertWQHistoric" for="endDateAlertWQHistoric" style="color: red;font-size: 13px; ">Alert: The End Date cannot be after 8/13/1982.</label>
+    </div>
+    <div class="col-md-9" id="divStartDateAlertPSandToxic" style="display: none">
+        <label id="startDateAlertPSandToxic" for="startDateAlertPSandToxic" style="color: red;font-size: 13px; ">Alert: The Start Date cannot be before 1/1/1970.</label>
+    </div>
+    <div class="col-md-9" id="divStartDateAlertFluorescence" style="display: none">
+        <label id="startDateAlertFluorescence" for="startDateAlertFluorescence" style="color: red;font-size: 13px; ">Alert: The Start Date cannot be before 8/2/1984.</label>
+    </div>
+
+</div>
+
+
+                <div id="projectContainer" class="form-group row" style="display: none">
+                    <label for="projectDropDownList" class="col-md-2">Project:</label>
+                    <div class="col-md-9">
+                        <input id="projectDropDownList" data-role="dropdownlist"
+                               data-auto-bind="false"
+                               data-text-field="Project"
+                               data-value-field="ProjectId"
+                               data-option-label="Select a Project..."
+                               data-value-template="projectDropDownListValueTemplate"
+                               data-template="projectDropDownListTemplate"
+                               data-bind="value: projectValue, source: projectDropDownSource, events: { change: onChangeProjectDropDown,dataBound: onDataBoundTemplateInit}"
+                               style="width: 100%" />
+                        <script id="projectDropDownListValueTemplate" type="text/x-kendo-template">
+                            #if(!data.ProjectAcronym){#
+                            <div>#:data.Project#</div>
+                            #}else{#
+                            <div>#:data.ProjectAcronym# - #:data.Project#</div>
+                            #}#
+                            <div class="clearfix"></div>
+                        </script>
+                        <script id="projectDropDownListTemplate" type="text/x-kendo-template">
+                            #if(data.AvailableRecords > 0 ){#
+                            <div style="float:left">#:data.ProjectAcronym# - #:data.Project#</div>
+                            #}else{#
+                            <div class="disable">
+                                <div style="float:left">#:data.ProjectAcronym# - #:data.Project#</div>
+                                <div style="float:right;font-size:12px"><i>No Records Available</i></div>
+                                <div class="clearfix"></div>
+                            </div>
+                            #}#
+                        </script>
+                    </div>
+                    <div class="col-md-1" style="height:29px">
+                        <div class="vertical-align form-tooltip">
+                            <i class="tooltip-question-circle"
+                               data-role="tooltip"
+                               data-width="375"
+                               data-position="right"
+                               data-content="">
+                            </i>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="geographicalAttributeContainer" class="form-group row" style="display: none">
+    <label for="geographicalAttributeDropDownList" class="col-md-2">Geographical Attribute:</label>
+    <div class="col-md-9">
+        <input id="geographicalAttributeDropDownList" data-role="dropdownlist"
+               data-auto-bind="false"
+               data-text-field="GeoTypeName"
+               data-value-field="GeoTypeId"
+               data-option-label="Select a Geographical Attribute..."
+               data-bind="value: geographicalAttributeValue, source: geographicalAttributeDropDownSource, events: { change: onChangeGeographicaAttributeDropDown }"
+               style="width: 100%" />
+    </div>
+    <div class="col-md-1" style="height:29px">
+        <div class="vertical-align form-tooltip">
+            <i class="tooltip-question-circle"
+               data-role="tooltip"
+               data-width="375"
+               data-position="right"
+               data-content="">
+            </i>
+        </div>
+    </div>
+</div>
+
+<div id="cbiGeographicalAttributeContainer" class="form-group row" style="display: none">
+    <label for="cbiGeographicalAttributeDropDownList" class="col-md-2">Geographical Attribute:</label>
+    <div class="col-md-9">
+        <input id="cbiGeographicalAttributeDropDownList" data-role="dropdownlist"
+               data-auto-bind="false"
+               data-text-field="GeoTypeName"
+               data-value-field="GeoTypeId"
+               data-option-label="Select a Geographical Attribute..."
+               data-bind="value: geographicalAttributeValue, source: cbiGeographicalAttributeDropDownSource, events: { change: onChangeCbiGeographicaAttributeDropDown }"
+               style="width: 100%" />
+    </div>
+    <div class="col-md-1" style="height:29px">
+        <div class="vertical-align form-tooltip">
+            <i class="tooltip-question-circle"
+               data-role="tooltip"
+               data-width="375"
+               data-position="right"
+               data-content="">
+            </i>
+        </div>
+    </div>
+</div>
+
+                <div id="attributeSelectionContainer" class="form-group row" style="display: none;">
+    <label for="attributeSelection" class="col-md-2">Attribute Selection:</label>
+    <div class="col-md-9" style="text-align: left;">
+        <select multiple="multiple" id="attributeSelection"></select>
+        <button class="multiselect-button"><img src="/Content/Images/switch.png" /></button>
+        <div class="attribute-multi-select-text">Click on option to select</div>
+    </div>
+</div>
+
+
+                <div id="formatContainer" class="form-group row" style="display:none;">
+    <label class="col-md-2 col-sm-2">Format:</label>
+    <div class="col-md-2 col-md-offset-1 col-sm-2">
+        <input id="TabRadio" type="radio" value="Tab" name="format" data-bind="checked:radioFormatValue, events:{change:onChangeFormatRadio}" />
+        <label for="TabRadio">TAB</label>
+    </div>
+    <div class="col-md-2 col-sm-2">
+        <input id="XMLRadio" type="radio" value="XML" name="format" data-bind="checked:radioFormatValue, events:{change:onChangeFormatRadio}" />
+        <label for="XMLRadio">XML</label>
+    </div>
+    <div class="col-md-2 col-sm-2">
+        <input id="CSVRadio" type="radio" value="CSV" name="format" data-bind="checked:radioFormatValue, events:{change:onChangeFormatRadio}" />
+        <label for="CSVRadio">CSV</label>
+    </div>
+    <div class=" col-md-2 col-sm-2">
+        <input id="JSONRadio" type="radio" value="JSON" name="format" data-bind="checked:radioFormatValue, events:{change:onChangeFormatRadio}" />
+        <label for="JSONRadio">JSON</label>
+    </div>
+</div>
+
+<div id="submitButtonContainer" class="form-group row" style="display:none;">
+    <div id="wrappedRadioContainer" class="col-md-3 col-md-offset-2" style="visibility: visible">
+        <label for="WrappedRadio">Wrap text values in quotes</label>
+        <input id="WrappedRadio" type="checkbox" value="TabW" data-bind="checked:radioWrappedValue, events:{change:onChangeWrappedCheckbox}" />
+    </div>
+    <div class="col-md-3">
+        <button id="submitButton" data-role="button" style="color:#ffffff;background-color: #2a4d7a;"
+                data-bind="events:{click:onClickSubmitButton}">
+            Submit
+        </button>
+    </div>
+    <div class="col-md-3">
+        <input id="fileDownloadRadio" type="checkbox" data-bind="checked:checkboxBrowserDownloadValue" />
+        <label for="fileDownloadRadio">View in browser window</label>
+        <input type="hidden" id="download_token_value_id" />
+    </div>
+</div>
+
+<div id="urlContainer" class="form-group row" style="display:none">
+    <input id="input-api-url" class="col-md-offset-3 col-md-7 col-sm-offset-1 col-sm-10" />
+    <div class="col-md-1 col-sm-1" style="height:29px">
+        <div class="vertical-align form-tooltip">
+            <i class="tooltip-question-circle"
+               data-role="tooltip"
+               
+               data-position="right"
+               data-width="375"
+               data-content="The following URL will yield this query with up to date data">
+            </i>
+        </div>
+    </div>
+</div>
+
+            </section>
+        </div>
+
+    </div>
+
+</div>
+<script src="/Scripts/LivingResources.js"></script>
+        </div>
+    </div>
+
+</body>
+</html>
