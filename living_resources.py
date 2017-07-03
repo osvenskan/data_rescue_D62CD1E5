@@ -89,7 +89,7 @@ data_type_ids = [data_type_id for data_type_id in data_type_ids if data_type_id 
 projects = util.download_and_jsonify(NAMESPACE, 'Projects', 'TidalPlankton')
 project_ids = [str(d['ProjectId']) for d in projects]
 
-# At this point, data_type_ids is probably just ('MonitorEvent', 'Reported')
+# At this point, data_type_ids should be just ('MonitorEvent', 'Reported')
 for data_type_id in data_type_ids:
     for project_id in project_ids:
         for geographical_type_id in geographical_types[data_type_id]:
@@ -118,7 +118,7 @@ for data_type_id in data_type_ids:
 # OK, that takes care of all 3 TidalPlankton data types. Remove TidalPlankton since it's been
 # handled.
 program_ids = [program_id for program_id in program_ids if program_id != 'TidalPlankton']
-# And now for the remaining programs. At this point, program_ids is probably just this --
+# And now for the remaining programs. At this point, program_ids should be just this --
 #    ('NontidalBenthic', 'TidalBenthic')
 for program_id in program_ids:
     print('Starting program {}...'.format(program_id))
@@ -154,12 +154,17 @@ for program_id in program_ids:
                 attribute_ids = map(str, attribute_ids)
 
                 for attribute_id in attribute_ids:
-                    # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/4-4-2012/4-4-2017/17/HUC12/781
-                    util.download(NAMESPACE,
-                                  program_id,
-                                  data_type_id,
-                                  DATE_RANGE.start.url_format,
-                                  DATE_RANGE.end.url_format,
-                                  project_id,
-                                  geographical_type_id,
-                                  attribute_id)
+                    if (NAMESPACE == 'LivingResources') and (program_id == 'TidalBenthic') and \
+                       (data_type_id == 'WaterQuality') and (geographical_type_id == 'Station'):
+                        # This is broken on the server side, skip for now.
+                        pass
+                    else:
+                        # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/MonitorEvent/4-4-2012/4-4-2017/17/HUC12/781
+                        util.download(NAMESPACE,
+                                      program_id,
+                                      data_type_id,
+                                      DATE_RANGE.start.url_format,
+                                      DATE_RANGE.end.url_format,
+                                      project_id,
+                                      geographical_type_id,
+                                      attribute_id)
