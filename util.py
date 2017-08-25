@@ -200,6 +200,8 @@ def post_attribute_ids(attribute_ids, *path_elements):
         with urllib.request.urlopen('http://' + HOST + url, data) as f:
             data = f.read()
 
+        check_for_error_in_content(data)
+
         print('Writing {}...'.format(filename))
         # Deserialize to accomplish 2 things -- first, test that what I got is valid JSON.
         # Second, so that I can write it to disk nicely formatted (which helps with debugging).
@@ -243,6 +245,8 @@ def post_single_attribute_id(attribute_id, *path_elements):
 
         with urllib.request.urlopen('http://' + HOST + url, data) as f:
             data = f.read()
+
+        check_for_error_in_content(data)
 
         print('Writing {}...'.format(filename))
         # Deserialize to accomplish 2 things -- first, test that what I got is valid JSON.
@@ -292,6 +296,8 @@ def download(*path_elements):
         else:
             raise ValueError("response.status == {}".format(response.status))
 
+        check_for_error_in_content(data)
+
         create_filename_directories(filename)
 
         print('Writing {}...'.format(filename))
@@ -302,3 +308,13 @@ def download(*path_elements):
             json.dump(data, f, indent=JSON_INDENT)
 
     return filename
+
+
+def check_for_error_in_content(data):
+    '''Given raw bytes from a download, scan them for the phrase that the chesapeakebay server
+    emits when things go awry.
+    '''
+    if b"An error has occurred" in data:
+        data = data.decode('utf-8')
+        msg = 'The JSON returned indicates an error: \n\n' + data
+        raise ValueError(msg)
