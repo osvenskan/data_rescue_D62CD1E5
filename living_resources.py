@@ -71,16 +71,23 @@ geographical_types = temp_geographical_types
 
 # First handle program == TidalPlankton, geo type == Station
 for geographical_type_id in geographical_types['Station']:
-    if geographical_type_id != 'FIPS':
+    attributes = util.download_and_jsonify(NAMESPACE, 'TidalPlankton', 'Station',
+                                           geographical_type_id)
+    attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
+    attribute_ids = map(str, attribute_ids)
+    if geographical_type_id == 'FIPS':
+        # FIPS works differently than other geo types (why?) and requires POSTing data rather
+        # than simple GETs.
+        for attribute_id in attribute_ids:
+            # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/Station/FIPS
+            util.post_single_attribute_id(attribute_id, NAMESPACE, 'TidalPlankton', 'Station',
+                                          geographical_type_id)
+    else:
         # e.g. https://data.chesapeakebay.net/api.json/LivingResources/TidalPlankton/Station/HUC8/
-        attributes = util.download_and_jsonify(NAMESPACE, 'TidalPlankton', 'Station',
-                                               geographical_type_id)
-        attribute_ids = util.extract_attribute_ids(geographical_type_id, attributes)
-        attribute_ids = map(str, attribute_ids)
-
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/LivingResources/TidalPlankton/Station/HUC8/20
             util.download(NAMESPACE, 'TidalPlankton', 'Station', geographical_type_id, attribute_id)
+
 
 # Remove Station since it was handled above
 data_type_ids = [data_type_id for data_type_id in data_type_ids if data_type_id != 'Station']

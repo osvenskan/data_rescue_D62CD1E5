@@ -19,7 +19,7 @@ BASE_URL = '/api.json'
 # destination server. This data is organized into lots and lots of small files, and each file
 # download pauses for the POLITENESS_DELAY, so adjusting this just a little can have a big
 # effect on how long it takes to complete a set of downloads.
-# As of June 2017, http://datahub.chesapeakebay.net/robots.txt doesn't exist, so the site itself
+# As of August 2017, http://datahub.chesapeakebay.net/robots.txt doesn't exist, so the site itself
 # gives us no guidance on what a polite crawl delay might be.
 POLITENESS_DELAY = 0.5
 
@@ -176,7 +176,9 @@ def create_filename_directories(filename):
 
 
 def post_attribute_ids(attribute_ids, *path_elements):
-    """POSTs a list of attribute IDs to the URL specified and returns the JSON response."""
+    """POSTs a list of attribute IDs to the URL specified and returns the JSON response.
+    This is only used by water_quality.py
+    """
     url = '/'.join([str(path_element) for path_element in path_elements])
 
     filename = url_to_filename(url)
@@ -192,6 +194,50 @@ def post_attribute_ids(attribute_ids, *path_elements):
         print('POSTing to {}...'.format(url))
         # Construct params for POST
         data = {'parametersList': ','.join([str(attribute_id) for attribute_id in attribute_ids])}
+        data = urllib.parse.urlencode(data)
+        data = data.encode('utf-8')
+
+        with urllib.request.urlopen('http://' + HOST + url, data) as f:
+            data = f.read()
+
+        print('Writing {}...'.format(filename))
+        # Deserialize to accomplish 2 things -- first, test that what I got is valid JSON.
+        # Second, so that I can write it to disk nicely formatted (which helps with debugging).
+        data = json.loads(data)
+        create_filename_directories(filename)
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=JSON_INDENT)
+
+    return data
+
+
+def post_single_attribute_id(attribute_id, *path_elements):
+    """POSTs a single attribute IDs to the URL specified and returns the JSON response.
+    This is only used by living_resources.py.
+    """
+    # This is the only place where I can't make a 1:1 correspondence between the URL name and
+    # the filename. The URL to which I POST the attribute_id doesn't vary, so here I apply the ugly
+    # hack of constructing a fake URL that includes the attribute id, using that to generate a
+    # filename, and then building the real URL later.
+    fake_url = '/'.join([str(path_element)
+                         for path_element
+                         in list(path_elements) + [attribute_id]])
+
+    filename = url_to_filename(fake_url)
+
+    if os.path.exists(filename):
+        print('{} already exists; skipping.'.format(filename))
+        with open(filename, 'rb') as f:
+            data = json.load(f)
+    else:
+        time.sleep(POLITENESS_DELAY)
+
+        url = '/'.join([str(path_element) for path_element in path_elements])
+
+        url = BASE_URL + '/' + urllib.parse.quote(url)
+        print('POSTing to {}...'.format(url))
+        # Construct params for POST
+        data = {'geographicalAttributesList': attribute_id}
         data = urllib.parse.urlencode(data)
         data = data.encode('utf-8')
 
