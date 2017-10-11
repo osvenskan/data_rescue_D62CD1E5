@@ -66,7 +66,6 @@ for data_type_id in data_type_ids:
 
         for attribute_id in attribute_ids:
             # e.g. https://data.chesapeakebay.net/api.JSON/Fluorescence/Vertical/8-2-1984/4-10-2017/HUC8/02060002
-            path = '/'.join(())
             util.download(NAMESPACE,
                           data_type_id,
                           DATE_RANGE.start.url_format,
