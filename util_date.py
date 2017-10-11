@@ -11,7 +11,7 @@ In addition, this module provides URL_DATE_TO_FILENAME_MAP which is explained by
 import datetime
 import collections
 
-END_DATE = (2017, 5, 31)
+END_DATE = (2017, 8, 31)
 
 DateRange = collections.namedtuple('DateRange', ['start', 'end'])
 
