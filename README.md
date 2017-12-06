@@ -1,6 +1,6 @@
 ## Intro
 
-This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chapel Hill Data Rescue event. They download data files from data.chesapeakebay.net. That site includes data going as far back as 1949. Data is still being added as of this writing (October 2017), so this data will never be complete. This initial data capture downloaded all data available up to and including 31 August, 2017. Note that some of the living resources data can't be downloaded (see below).
+This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chapel Hill Data Rescue event. They download data files from data.chesapeakebay.net. That site includes data going as far back as 1949. Data is still being added as of this writing (December 2017), so this data will never be complete. This initial data capture downloaded all data available up to and including 30 November, 2017. Note that some of the living resources data can't be downloaded (see below).
 
 
 ## REST API
@@ -13,11 +13,11 @@ The site also provides a JavaScript-enabled Web interface that mostly follows th
 
 The Web site, the API, and my code divide the data into five categories -- Water Quality, Living Resources, Fluorescence, Point Source, and Toxics. The first two are much bigger than the others.
 
-Water Quality - 88516 files
-Living Resources  - 58048 files
-Fluorescence - 174 files
-Point Source - 12998 files
-Toxics - 2397 files
+ - Water Quality - 88516 files
+ - Living Resources - 58048 files
+ - Fluorescence - 174 files
+ - Point Source - 12998 files
+ - Toxics - 2397 files
 
 
 ## About the Code (Including How to Run It)
