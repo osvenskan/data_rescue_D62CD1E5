@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
 # Python imports
-import os
-import json
-import collections
-import pprint
-pp=pprint.pprint
 
 # Project imports
 import util
@@ -23,6 +18,7 @@ Beneath that, there's a subdivision of Geographical attributes (FIPS, State, Fac
 
 Those two categories and (sometimes) a date range cover everything in PointSource.
 """
+
 
 def extract_attribute_ids(geographical_type_id, attributes):
     """PointSource-specific version of util.extract_attribute_ids() (q.v.)"""

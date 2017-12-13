@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
 # Python imports
-import os
-import json
-import collections
-import pprint
-pp=pprint.pprint
 
 # Project imports
 import util
@@ -26,6 +21,7 @@ GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP = {'HUC8': 'HUC8',
                                       'CBSeg': 'CBSEG_1985',
                                       'CBPBasin': 'BASIN',
                                       }
+
 
 def extract_attribute_ids(geographical_type_id, attributes):
     """Toxics-specific version of util.extract_attribute_ids() (q.v.)"""

@@ -1,5 +1,4 @@
 import os
-import time
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -57,6 +56,7 @@ GEOGRAPHICAL_TYPE_ATTRIBUTE_ID_MAP = {'HUC8': 'HUCEightId',
 # _http_connection is a global for use by this module only. Making it global allows us to keep
 # the HTTP connection alive between requests which is more polite to the remote server.
 _http_connection = None
+
 
 def _connect_to_server():
     """Internal-use only function for establishing an HTTP connection to chesapeakebay.net"""
@@ -292,7 +292,6 @@ def download(*path_elements):
         response = _http_connection.getresponse()
         if response.status == 200:
             data = response.read()
-            data_received = True
         else:
             raise ValueError("response.status == {}".format(response.status))
 

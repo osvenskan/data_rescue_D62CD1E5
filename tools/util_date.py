@@ -15,11 +15,13 @@ END_DATE = (2017, 11, 30)
 
 DateRange = collections.namedtuple('DateRange', ['start', 'end'])
 
+
 class WaterQualityDate(datetime.date):
     @property
     def url_format(self):
         """Return m-d-yyyy, e.g. 2-14-2017 for Feb 14th 2017"""
         return '{}-{}-{}'.format(self.month, self.day, self.year)
+
 
 class LivingResourcesDate(datetime.date):
     @property
@@ -27,11 +29,13 @@ class LivingResourcesDate(datetime.date):
         """Return m-d-yyyy, e.g. 2-14-2017 for Feb 14th 2017"""
         return '{}-{}-{}'.format(self.month, self.day, self.year)
 
+
 class FluorescenceDate(datetime.date):
     @property
     def url_format(self):
         """Return e.g. Tue Feb 14 2017"""
         return self.strftime('%a %b %d %Y')
+
 
 class PointSourceDate(datetime.date):
     """PointSource makes things difficult by using 2 different date formats"""
@@ -44,6 +48,7 @@ class PointSourceDate(datetime.date):
     def url_format_for_attribute(self):
         """Return m-d-yyyy, e.g. 2-14-2017 for Feb 14th 2017"""
         return '{}-{}-{}'.format(self.month, self.day, self.year)
+
 
 class ToxicsDate(datetime.date):
     """Toxics makes things difficult by using 2 different date formats"""
@@ -105,6 +110,3 @@ for category in ('PointSource', 'Toxics'):
                DATES[category].end.url_format_for_attribute
     URL_DATE_TO_FILENAME_MAP[url_date] = \
         DATES[category].start.isoformat() + '_to_' + DATES[category].end.isoformat()
-
-
-

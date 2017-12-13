@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
 # Python imports
-import os
-import json
-import collections
-import pprint
-pp=pprint.pprint
 
 # Project imports
 import util
