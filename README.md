@@ -11,7 +11,7 @@ The site also provides a JavaScript-enabled Web interface that mostly follows th
 
 ## Data Categories
 
-The Web site, the API, and my code divide the data into five categories -- Water Quality, Living Resources, Fluorescence, Point Source, and Toxics. The first two are much bigger than the others.
+The Web site, the API, and my code divide the data into five categories -- Water Quality, Living Resources, Fluorescence, Point Source, and Toxics. The first two are much bigger than the others. Water Quality is bigger than all the other combined.
 
  - Water Quality - 88516 files
  - Living Resources - 58048 files
@@ -26,9 +26,9 @@ This code was written in Python 3.6 on a Mac. It might run with other Python ver
 
 The code consists of one script for each category (`water_quality.py`, `toxics.py`, etc.). There's also some library files called `util.py` and `util_date.py`. The latter is especially important because it contains a constant called `END_DATE` that affects all scripts. It defines the end of the date range for which data will be downloaded. (There is no corresponding `START_DATE` constant. The scripts are harcoded to download to ask for data from the earliest date it's available. Sorry if that's inconvenient!)
 
-Last but not least, the file `verify.py` performs two important tasks. First, once all the data is downloaded, it searches each JSON file for a string that indicates that there's a bug in one of my download scripts. (The bug was found and fixed, but it doesn't hurt to double check.) Second, it gzips each JSON file to save space.
+Last but not least, the file `verify_and_compress.py` performs two important tasks. First, once all the data is downloaded, it searches each JSON file for a string that indicates that there's a bug in one of my download scripts. (The bug was found and fixed, but it doesn't hurt to double check.) Second, it gzips each JSON file to save space.
 
-An obvious improvement would be to fold the services of `verify.py` into `util.py`.
+An obvious improvement would be to fold the services of `verify_and_compress.py` into `util.py`.
 
 ### Running the Scripts
 
@@ -40,7 +40,7 @@ The water quality script takes 2-3 days to complete if all goes well. Living res
 
 I recommend not running the scripts simultaneously in order to be kind to the Chesapeake Bay Web server. If a script crashes while running due to a network hiccup, simply rerun it. It will pick up where it left off.
 
-Once all the scripts are done, run `verify.py`.
+Once all the scripts are done, run `verify_and_compress.py`.
 
 ## Useful Files for Debugging
 
