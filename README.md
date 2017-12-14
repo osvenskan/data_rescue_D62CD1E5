@@ -2,6 +2,8 @@
 
 This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chapel Hill Data Rescue event. They download data files from [data.chesapeakebay.net](https://data.chesapeakebay.net/). That site includes data going as far back as 1949. Data is still being added as of this writing (December 2017), so this data will never be complete. This initial data capture downloaded all data available up to and including 30 November, 2017. Note that some of the living resources data can't be downloaded (see below).
 
+The most current version of the code is available at https://github.com/osvenskan/data_rescue_D62CD1E5. You might also be able to find it at https://github.com/edgi-govdata-archiving/archivers-harvesting-tools/tree/master/utils.
+
 
 ## REST API
 
