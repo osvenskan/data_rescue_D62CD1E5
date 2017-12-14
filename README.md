@@ -1,6 +1,6 @@
 ## Intro
 
-This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chapel Hill Data Rescue event. They download data files from data.chesapeakebay.net. That site includes data going as far back as 1949. Data is still being added as of this writing (December 2017), so this data will never be complete. This initial data capture downloaded all data available up to and including 30 November, 2017. Note that some of the living resources data can't be downloaded (see below).
+This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chapel Hill Data Rescue event. They download data files from [data.chesapeakebay.net](https://data.chesapeakebay.net/). That site includes data going as far back as 1949. Data is still being added as of this writing (December 2017), so this data will never be complete. This initial data capture downloaded all data available up to and including 30 November, 2017. Note that some of the living resources data can't be downloaded (see below).
 
 
 ## REST API
