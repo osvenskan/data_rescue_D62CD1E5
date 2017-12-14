@@ -4,6 +4,7 @@ This a set of Python 3 scripts that I (Philip Semanchuk) wrote for the 2017 Chap
 
 The most current version of the code is available at https://github.com/osvenskan/data_rescue_D62CD1E5. You might also be able to find it at https://github.com/edgi-govdata-archiving/archivers-harvesting-tools/tree/master/utils.
 
+The data was uploaded to https://www.archivers.space/urls/D62CD1E5-DBF2-475F-BDC2-EE9E5E68274A.
 
 ## REST API
 
